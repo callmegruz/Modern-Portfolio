@@ -16,7 +16,9 @@ import {
   Database,
   Cloud,
   Code,
-  Server
+  Server,
+  Menu,
+  X
 } from 'lucide-react'
 import Canvas3D from './components/Canvas3D'
 import ProjectCanvas3D from './components/ProjectCanvas'
@@ -49,6 +51,7 @@ const staggerContainer = {
 export default function App() {
   const [scrolled, setScrolled] = useState(false)
   const [activeSection, setActiveSection] = useState('hero')
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
 
   // Contact Form State
   const [formState, setFormState] = useState({ name: '', email: '', subject: '', message: '' })
@@ -79,6 +82,16 @@ export default function App() {
     return () => window.removeEventListener('scroll', handleScroll)
   }, [])
 
+  useEffect(() => {
+    const handleResize = () => {
+      if (window.innerWidth > 768) {
+        setMobileMenuOpen(false)
+      }
+    }
+    window.addEventListener('resize', handleResize)
+    return () => window.removeEventListener('resize', handleResize)
+  }, [])
+
   const handleContactSubmit = (e: React.FormEvent) => {
     e.preventDefault()
     if (!formState.name || !formState.email || !formState.message) {
@@ -95,6 +108,7 @@ export default function App() {
   }
 
   const handleNavClick = (sectionId: string) => {
+    setMobileMenuOpen(false)
     const element = document.getElementById(sectionId)
     if (element) {
       const offset = 80 // header height
@@ -215,11 +229,64 @@ export default function App() {
           </ul>
 
           {/* Mobile Menu Icon */}
-          <div style={{ display: 'none' }} className="mobile-toggle-btn">
-            {/* Real responsive display done via CSS media queries */}
-          </div>
+          <button 
+            onClick={() => setMobileMenuOpen(!mobileMenuOpen)} 
+            className="mobile-toggle-btn"
+            aria-label="Toggle navigation menu"
+          >
+            {mobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
+          </button>
         </div>
       </header>
+
+      {/* Mobile Nav Overlay */}
+      <AnimatePresence>
+        {mobileMenuOpen && (
+          <motion.div
+            className="mobile-nav-overlay"
+            initial={{ opacity: 0, y: -20 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -20 }}
+            transition={{ duration: 0.3 }}
+            style={{
+              position: 'fixed',
+              top: '80px', // Header height
+              left: 0,
+              width: '100%',
+              background: 'rgba(3, 3, 12, 0.95)',
+              backdropFilter: 'blur(20px)',
+              borderBottom: '1px solid var(--border-glass)',
+              zIndex: 99,
+              padding: '2rem 1.5rem',
+              display: 'flex',
+              flexDirection: 'column',
+              gap: '1.5rem'
+            }}
+          >
+            {['hero', 'about', 'projects', 'experience', 'education', 'contact'].map((sec) => (
+              <a
+                key={sec}
+                href={`#${sec}`}
+                onClick={(e) => { e.preventDefault(); handleNavClick(sec) }}
+                style={{
+                  fontSize: '1.1rem',
+                  fontWeight: 600,
+                  color: activeSection === sec ? 'var(--secondary)' : 'var(--text-muted)'
+                }}
+              >
+                {sec.charAt(0).toUpperCase() + sec.slice(1)}
+              </a>
+            ))}
+            <button
+              onClick={() => handleNavClick('contact')}
+              className="cta-btn"
+              style={{ width: '100%', textAlign: 'center', marginTop: '1rem' }}
+            >
+              Hire Me
+            </button>
+          </motion.div>
+        )}
+      </AnimatePresence>
 
       {/* Hero Section */}
       <section id="hero" className="section" style={{ position: 'relative', overflow: 'hidden' }}>
@@ -377,7 +444,7 @@ export default function App() {
       {/* Education Section */}
       <motion.section id="education" className="section container" {...sectionReveal}>
         <motion.h2 className="section-title" {...fadeInUp}>Education</motion.h2>
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '2rem' }}>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '2rem' }}>
           {education.map((edu, idx) => (
             <motion.div
               key={idx}
