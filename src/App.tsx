@@ -111,39 +111,18 @@ export default function App() {
     setFormStatus('submitting')
 
     try {
-      const accessKey = import.meta.env.VITE_WEB3FORMS_ACCESS_KEY || "YOUR_ACCESS_KEY_HERE"
+      const devKey = import.meta.env.VITE_WEB3FORMS_ACCESS_KEY
+      const isDev = import.meta.env.DEV
 
-      if (accessKey === "YOUR_ACCESS_KEY_HERE" || accessKey.trim() === "") {
-        // Fallback to FormSubmit.co
-        const formData = new FormData()
-        formData.append('name', formState.name)
-        formData.append('email', formState.email)
-        formData.append('subject', formState.subject || "New Message from Portfolio")
-        formData.append('message', formState.message)
-
-        const response = await fetch("https://formsubmit.co/ajax/charansuriya2000@gmail.com", {
-          method: "POST",
-          body: formData,
-          headers: { 
-            "Accept": "application/json"
-          }
-        })
-
-        if (response.ok) {
-          setFormStatus('success')
-          setFormState({ name: '', email: '', subject: '', message: '' })
-        } else {
-          setFormStatus('error')
-        }
-      } else {
-        // Web3Forms API
+      if (isDev && devKey && devKey !== "YOUR_ACCESS_KEY_HERE" && devKey.trim() !== "") {
+        // Direct submission for local development convenience
         const payload = {
-          access_key: accessKey,
+          access_key: devKey,
           name: formState.name,
           email: formState.email,
           subject: formState.subject || "New Message from Portfolio",
           message: formState.message,
-          from_name: "Guru's Portfolio"
+          from_name: "Guru's Portfolio (Local Dev)"
         }
 
         const response = await fetch("https://api.web3forms.com/submit", {
@@ -161,6 +140,47 @@ export default function App() {
           setFormState({ name: '', email: '', subject: '', message: '' })
         } else {
           setFormStatus('error')
+        }
+      } else {
+        // Production: Submit securely through Vercel Serverless Function proxy
+        const response = await fetch("/api/submit-contact", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify({
+            name: formState.name,
+            email: formState.email,
+            subject: formState.subject || "New Message from Portfolio",
+            message: formState.message
+          })
+        })
+
+        if (response.ok) {
+          setFormStatus('success')
+          setFormState({ name: '', email: '', subject: '', message: '' })
+        } else {
+          // Fallback to FormSubmit.co if the serverless proxy is misconfigured/fails
+          const formData = new FormData()
+          formData.append('name', formState.name)
+          formData.append('email', formState.email)
+          formData.append('subject', formState.subject || "New Message from Portfolio")
+          formData.append('message', formState.message)
+
+          const fallbackResponse = await fetch("https://formsubmit.co/ajax/charansuriya2000@gmail.com", {
+            method: "POST",
+            body: formData,
+            headers: { 
+              "Accept": "application/json"
+            }
+          })
+
+          if (fallbackResponse.ok) {
+            setFormStatus('success')
+            setFormState({ name: '', email: '', subject: '', message: '' })
+          } else {
+            setFormStatus('error')
+          }
         }
       }
     } catch {
