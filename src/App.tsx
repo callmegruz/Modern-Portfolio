@@ -29,6 +29,13 @@ const fadeInUp = {
   transition: { duration: 0.8, ease: [0.16, 1, 0.3, 1] as const }
 }
 
+const sectionReveal = {
+  initial: { opacity: 0, scale: 0.95, y: 60 },
+  whileInView: { opacity: 1, scale: 1, y: 0 },
+  viewport: { once: true, amount: 0.12 },
+  transition: { duration: 0.85, ease: [0.16, 1, 0.3, 1] as const }
+}
+
 const staggerContainer = {
   initial: {},
   whileInView: {
@@ -252,7 +259,7 @@ export default function App() {
       </section>
 
       {/* About Section */}
-      <section id="about" className="section container">
+      <motion.section id="about" className="section container" {...sectionReveal}>
         <motion.h2 className="section-title" {...fadeInUp}>About Me</motion.h2>
         <div className="about-grid">
           <motion.div className="about-bio glass-card" {...fadeInUp}>
@@ -296,10 +303,10 @@ export default function App() {
             ))}
           </motion.div>
         </div>
-      </section>
+      </motion.section>
 
       {/* Projects Section */}
-      <section id="projects" className="section container">
+      <motion.section id="projects" className="section container" {...sectionReveal}>
         <motion.h2 className="section-title" {...fadeInUp}>Featured Projects</motion.h2>
         <motion.div
           className="projects-grid"
@@ -340,10 +347,10 @@ export default function App() {
             </motion.div>
           ))}
         </motion.div>
-      </section>
+      </motion.section>
 
       {/* Experience Section */}
-      <section id="experience" className="section container">
+      <motion.section id="experience" className="section container" {...sectionReveal}>
         <motion.h2 className="section-title" {...fadeInUp}>Career Journey</motion.h2>
         <div className="timeline">
           {experiences.map((exp, idx) => (
@@ -365,10 +372,10 @@ export default function App() {
             </motion.div>
           ))}
         </div>
-      </section>
+      </motion.section>
 
       {/* Education Section */}
-      <section id="education" className="section container">
+      <motion.section id="education" className="section container" {...sectionReveal}>
         <motion.h2 className="section-title" {...fadeInUp}>Education</motion.h2>
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '2rem' }}>
           {education.map((edu, idx) => (
@@ -399,10 +406,10 @@ export default function App() {
             </motion.div>
           ))}
         </div>
-      </section>
+      </motion.section>
 
       {/* Contact Section */}
-      <section id="contact" className="section container">
+      <motion.section id="contact" className="section container" {...sectionReveal}>
         <div className="contact-container glass-card">
           <div style={{ textAlign: 'center', marginBottom: '2.5rem' }}>
             <Mail size={36} style={{ color: 'var(--secondary)', marginBottom: '1rem' }} />
@@ -492,7 +499,7 @@ export default function App() {
             </AnimatePresence>
           </form>
         </div>
-      </section>
+      </motion.section>
 
       {/* Footer */}
       <footer className="footer">

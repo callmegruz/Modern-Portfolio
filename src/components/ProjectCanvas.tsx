@@ -45,29 +45,84 @@ function VectorMatrix() {
   return <group ref={groupRef}>{nodes}</group>
 }
 
-// 3D Conversation Dialogue Synapse Knot (HireMate Chatbot)
-function SynapseKnot() {
-  const meshRef = useRef<THREE.Mesh>(null)
+// 3D Document / Resume Matcher with matching signal nodes
+function ResumeMatcher() {
+  const groupRef = useRef<THREE.Group>(null)
 
   useFrame((state) => {
-    if (meshRef.current) {
-      meshRef.current.rotation.x = state.clock.elapsedTime * 0.5
-      meshRef.current.rotation.y = state.clock.elapsedTime * 0.6
-      meshRef.current.rotation.z = state.clock.elapsedTime * 0.2
+    if (groupRef.current) {
+      groupRef.current.rotation.y = state.clock.elapsedTime * 0.45
+      groupRef.current.rotation.x = Math.sin(state.clock.elapsedTime * 0.3) * 0.15
     }
   })
 
   return (
-    <mesh ref={meshRef}>
-      <torusKnotGeometry args={[0.5, 0.16, 64, 8, 3, 4]} />
-      <meshStandardMaterial
-        color="#ec4899"
-        roughness={0.1}
-        metalness={0.8}
-        emissive="#ec4899"
-        emissiveIntensity={0.3}
-      />
-    </mesh>
+    <group ref={groupRef}>
+      {/* Dark metallic clipboard backing */}
+      <mesh>
+        <boxGeometry args={[0.8, 1.1, 0.05]} />
+        <meshStandardMaterial
+          color="#0d0e25"
+          roughness={0.2}
+          metalness={0.9}
+        />
+      </mesh>
+
+      {/* Floating semi-transparent glowing resume sheet */}
+      <mesh position={[0, 0, 0.035]}>
+        <boxGeometry args={[0.7, 0.98, 0.04]} />
+        <meshStandardMaterial
+          color="#8b5cf6"
+          transparent
+          opacity={0.8}
+          roughness={0.15}
+          metalness={0.3}
+          emissive="#8b5cf6"
+          emissiveIntensity={0.15}
+        />
+      </mesh>
+
+      {/* Stylized horizontal resume content bars */}
+      <mesh position={[-0.05, 0.26, 0.06]}>
+        <boxGeometry args={[0.42, 0.035, 0.015]} />
+        <meshBasicMaterial color="#06b6d4" />
+      </mesh>
+      
+      <mesh position={[-0.1, 0.12, 0.06]}>
+        <boxGeometry args={[0.32, 0.025, 0.015]} />
+        <meshBasicMaterial color="#06b6d4" />
+      </mesh>
+
+      <mesh position={[-0.05, -0.02, 0.06]}>
+        <boxGeometry args={[0.42, 0.025, 0.015]} />
+        <meshBasicMaterial color="#06b6d4" />
+      </mesh>
+
+      <mesh position={[-0.15, -0.16, 0.06]}>
+        <boxGeometry args={[0.22, 0.025, 0.015]} />
+        <meshBasicMaterial color="#94a3b8" />
+      </mesh>
+
+      {/* Glowing AI matching indicator node (chat dialog node) */}
+      <mesh position={[0.2, 0.28, 0.075]}>
+        <sphereGeometry args={[0.08, 16, 16]} />
+        <meshStandardMaterial
+          color="#ec4899"
+          emissive="#ec4899"
+          emissiveIntensity={1.2}
+        />
+      </mesh>
+      
+      {/* Secondary node */}
+      <mesh position={[0.2, -0.1, 0.075]}>
+        <sphereGeometry args={[0.06, 16, 16]} />
+        <meshStandardMaterial
+          color="#06b6d4"
+          emissive="#06b6d4"
+          emissiveIntensity={0.8}
+        />
+      </mesh>
+    </group>
   )
 }
 
@@ -97,7 +152,7 @@ export default function ProjectCanvas3D({ type }: ProjectCanvasProps) {
           <pointLight position={[-5, -5, -5]} intensity={1.0} color="#06b6d4" />
           
           <Float speed={1.8} rotationIntensity={1.2} floatIntensity={1.2}>
-            {type === 'rag' ? <VectorMatrix /> : <SynapseKnot />}
+            {type === 'rag' ? <VectorMatrix /> : <ResumeMatcher />}
           </Float>
         </Canvas>
       </Suspense>
