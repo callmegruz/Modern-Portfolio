@@ -18,7 +18,9 @@ import {
   Code,
   Server,
   Menu,
-  X
+  X,
+  Copy,
+  Check
 } from 'lucide-react'
 import Canvas3D from './components/Canvas3D'
 import ProjectCanvas3D from './components/ProjectCanvas'
@@ -56,6 +58,13 @@ export default function App() {
   // Contact Form State
   const [formState, setFormState] = useState({ name: '', email: '', subject: '', message: '' })
   const [formStatus, setFormStatus] = useState<'idle' | 'submitting' | 'success' | 'error'>('idle')
+  const [copied, setCopied] = useState(false)
+
+  const copyEmailToClipboard = () => {
+    navigator.clipboard.writeText('charansuriya2000@gmail.com')
+    setCopied(true)
+    setTimeout(() => setCopied(false), 2000)
+  }
 
   useEffect(() => {
     const handleScroll = () => {
@@ -102,27 +111,59 @@ export default function App() {
     setFormStatus('submitting')
 
     try {
-      const formData = new FormData()
-      formData.append('name', formState.name)
-      formData.append('email', formState.email)
-      formData.append('subject', formState.subject || "New Message from Portfolio")
-      formData.append('message', formState.message)
+      const accessKey = import.meta.env.VITE_WEB3FORMS_ACCESS_KEY || "YOUR_ACCESS_KEY_HERE"
 
-      const response = await fetch("https://formsubmit.co/ajax/charansuriya2000@gmail.com", {
-        method: "POST",
-        body: formData,
-        headers: { 
-          "Accept": "application/json"
+      if (accessKey === "YOUR_ACCESS_KEY_HERE" || accessKey.trim() === "") {
+        // Fallback to FormSubmit.co
+        const formData = new FormData()
+        formData.append('name', formState.name)
+        formData.append('email', formState.email)
+        formData.append('subject', formState.subject || "New Message from Portfolio")
+        formData.append('message', formState.message)
+
+        const response = await fetch("https://formsubmit.co/ajax/charansuriya2000@gmail.com", {
+          method: "POST",
+          body: formData,
+          headers: { 
+            "Accept": "application/json"
+          }
+        })
+
+        if (response.ok) {
+          setFormStatus('success')
+          setFormState({ name: '', email: '', subject: '', message: '' })
+        } else {
+          setFormStatus('error')
         }
-      })
-
-      if (response.ok) {
-        setFormStatus('success')
-        setFormState({ name: '', email: '', subject: '', message: '' })
       } else {
-        setFormStatus('error')
+        // Web3Forms API
+        const payload = {
+          access_key: accessKey,
+          name: formState.name,
+          email: formState.email,
+          subject: formState.subject || "New Message from Portfolio",
+          message: formState.message,
+          from_name: "Guru's Portfolio"
+        }
+
+        const response = await fetch("https://api.web3forms.com/submit", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "Accept": "application/json"
+          },
+          body: JSON.stringify(payload)
+        })
+
+        const data = await response.json()
+        if (response.ok && data.success) {
+          setFormStatus('success')
+          setFormState({ name: '', email: '', subject: '', message: '' })
+        } else {
+          setFormStatus('error')
+        }
       }
-    } catch (error) {
+    } catch {
       setFormStatus('error')
     }
   }
@@ -495,94 +536,148 @@ export default function App() {
 
       {/* Contact Section */}
       <motion.section id="contact" className="section container" {...sectionReveal}>
-        <div className="contact-container glass-card">
-          <div style={{ textAlign: 'center', marginBottom: '2.5rem' }}>
-            <Mail size={36} style={{ color: 'var(--secondary)', marginBottom: '1rem' }} />
-            <h2 style={{ fontSize: '2.25rem', marginBottom: '0.5rem' }}>Get in Touch</h2>
-            <p>Have an interesting project or career opening? Let's discuss.</p>
+        <div className="contact-grid-layout">
+          {/* Left Column: Direct Info & Socials */}
+          <div className="contact-info-panel glass-card">
+            <div className="contact-info-header">
+              <Mail size={36} style={{ color: 'var(--secondary)', marginBottom: '1rem' }} />
+              <h2 style={{ fontSize: '2.25rem', marginBottom: '0.5rem' }}>Let's Connect</h2>
+              <p>Have an interesting project, job opening, or just want to chat? Reach out directly or drop a message via the form.</p>
+            </div>
+
+            <div className="contact-details">
+              <div className="contact-detail-card">
+                <span className="detail-label">Email Address</span>
+                <span className="detail-value">charansuriya2000@gmail.com</span>
+                <div className="detail-actions">
+                  <button onClick={copyEmailToClipboard} className="btn-detail-action" aria-label="Copy email address">
+                    {copied ? (
+                      <>
+                        <Check size={16} style={{ color: '#10b981' }} /> Copied!
+                      </>
+                    ) : (
+                      <>
+                        <Copy size={16} /> Copy Email
+                      </>
+                    )}
+                  </button>
+                  <a href="mailto:charansuriya2000@gmail.com" className="btn-detail-action btn-cta-secondary" aria-label="Send direct email">
+                    <Send size={16} /> Open Mail Client
+                  </a>
+                </div>
+              </div>
+
+              <div className="contact-detail-card">
+                <span className="detail-label">Professional Networks</span>
+                <div className="social-links-grid">
+                  <a href="https://linkedin.com/in/gurucharan-s" target="_blank" rel="noreferrer" className="social-action-card" id="contact-linkedin">
+                    <Linkedin size={20} />
+                    <span>LinkedIn</span>
+                  </a>
+                  <a href="https://github.com/callmegruz" target="_blank" rel="noreferrer" className="social-action-card" id="contact-github">
+                    <Github size={20} />
+                    <span>GitHub</span>
+                  </a>
+                </div>
+              </div>
+
+              <div className="contact-detail-card response-promise-card">
+                <div className="promise-badge">
+                  <Sparkles size={14} />
+                  <span>Availability & Reply</span>
+                </div>
+                <p style={{ fontSize: '0.85rem', color: 'var(--text-muted)', marginTop: '0.5rem' }}>
+                  Always open to freelance work and career opportunities. I promise a response within 24 hours.
+                </p>
+              </div>
+            </div>
           </div>
 
-          <form className="contact-form" onSubmit={handleContactSubmit}>
-            <div className="form-group">
-              <label htmlFor="name" className="form-label">Your Name</label>
-              <input
-                id="name"
-                type="text"
-                className="form-input"
-                placeholder="John Doe"
-                required
-                value={formState.name}
-                onChange={(e) => setFormState({ ...formState, name: e.target.value })}
-                disabled={formStatus === 'submitting'}
-              />
-            </div>
-            <div className="form-group">
-              <label htmlFor="email" className="form-label">Email Address</label>
-              <input
-                id="email"
-                type="email"
-                className="form-input"
-                placeholder="john@example.com"
-                required
-                value={formState.email}
-                onChange={(e) => setFormState({ ...formState, email: e.target.value })}
-                disabled={formStatus === 'submitting'}
-              />
-            </div>
-            <div className="form-group">
-              <label htmlFor="subject" className="form-label">Subject</label>
-              <input
-                id="subject"
-                type="text"
-                className="form-input"
-                placeholder="Project Discussion"
-                value={formState.subject}
-                onChange={(e) => setFormState({ ...formState, subject: e.target.value })}
-                disabled={formStatus === 'submitting'}
-              />
-            </div>
-            <div className="form-group">
-              <label htmlFor="message" className="form-label">Message</label>
-              <textarea
-                id="message"
-                className="form-textarea"
-                placeholder="Tell me about your project details..."
-                required
-                value={formState.message}
-                onChange={(e) => setFormState({ ...formState, message: e.target.value })}
-                disabled={formStatus === 'submitting'}
-              />
-            </div>
+          {/* Right Column: Contact Form */}
+          <div className="contact-form-panel glass-card">
+            <h3 style={{ fontSize: '1.75rem', marginBottom: '1.5rem' }}>Send a Message</h3>
+            <form className="contact-form" onSubmit={handleContactSubmit}>
+              <div className="form-group">
+                <label htmlFor="name" className="form-label">Your Name</label>
+                <input
+                  id="name"
+                  type="text"
+                  className="form-input"
+                  placeholder="John Doe"
+                  required
+                  value={formState.name}
+                  onChange={(e) => setFormState({ ...formState, name: e.target.value })}
+                  disabled={formStatus === 'submitting'}
+                />
+              </div>
+              <div className="form-group">
+                <label htmlFor="email" className="form-label">Email Address</label>
+                <input
+                  id="email"
+                  type="email"
+                  className="form-input"
+                  placeholder="john@example.com"
+                  required
+                  value={formState.email}
+                  onChange={(e) => setFormState({ ...formState, email: e.target.value })}
+                  disabled={formStatus === 'submitting'}
+                />
+              </div>
+              <div className="form-group">
+                <label htmlFor="subject" className="form-label">Subject</label>
+                <input
+                  id="subject"
+                  type="text"
+                  className="form-input"
+                  placeholder="Project Discussion"
+                  value={formState.subject}
+                  onChange={(e) => setFormState({ ...formState, subject: e.target.value })}
+                  disabled={formStatus === 'submitting'}
+                />
+              </div>
+              <div className="form-group">
+                <label htmlFor="message" className="form-label">Message</label>
+                <textarea
+                  id="message"
+                  className="form-textarea"
+                  placeholder="Tell me about your project details..."
+                  required
+                  value={formState.message}
+                  onChange={(e) => setFormState({ ...formState, message: e.target.value })}
+                  disabled={formStatus === 'submitting'}
+                />
+              </div>
 
-            <button
-              type="submit"
-              className="submit-btn"
-              disabled={formStatus === 'submitting'}
-            >
-              {formStatus === 'submitting' ? (
-                <span>Sending Message...</span>
-              ) : formStatus === 'success' ? (
-                <span>Sent Successfully!</span>
-              ) : (
-                <>
-                  Send Message <Send size={16} />
-                </>
-              )}
-            </button>
+              <button
+                type="submit"
+                className="submit-btn"
+                disabled={formStatus === 'submitting'}
+              >
+                {formStatus === 'submitting' ? (
+                  <span>Sending Message...</span>
+                ) : formStatus === 'success' ? (
+                  <span>Sent Successfully!</span>
+                ) : (
+                  <>
+                    Send Message <Send size={16} />
+                  </>
+                )}
+              </button>
 
-            <AnimatePresence>
-              {formStatus === 'success' && (
-                <motion.div
-                  initial={{ opacity: 0, y: 10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0 }}
-                  style={{ color: '#10b981', textAlign: 'center', fontSize: '0.95rem', fontWeight: 600 }}
-                >
-                  Thank you! Your message was received and I will reply shortly.
-                </motion.div>
-              )}
-            </AnimatePresence>
-          </form>
+              <AnimatePresence>
+                {formStatus === 'success' && (
+                  <motion.div
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0 }}
+                    style={{ color: '#10b981', textAlign: 'center', fontSize: '0.95rem', fontWeight: 600 }}
+                  >
+                    Thank you! Your message was received and I will reply shortly.
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </form>
+          </div>
         </div>
       </motion.section>
 
