@@ -223,6 +223,27 @@ a {
   width: 100%;
 }
 
+.nav-contact-highlight {
+  background: rgba(6, 182, 212, 0.1);
+  border: 1px solid var(--secondary);
+  padding: 0.4rem 1rem !important;
+  border-radius: 20px;
+  color: var(--secondary) !important;
+  box-shadow: 0 0 10px rgba(6, 182, 212, 0.15);
+  transition: var(--transition-fast);
+}
+
+.nav-contact-highlight:hover {
+  background: var(--secondary);
+  color: #0c0d21 !important;
+  box-shadow: 0 0 15px var(--secondary-glow);
+  transform: translateY(-1px);
+}
+
+.nav-contact-highlight::after {
+  display: none !important;
+}
+
 .cta-btn {
   background: linear-gradient(135deg, var(--primary), var(--secondary));
   color: white;

@@ -92,7 +92,7 @@ export default function App() {
     return () => window.removeEventListener('resize', handleResize)
   }, [])
 
-  const handleContactSubmit = (e: React.FormEvent) => {
+  const handleContactSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     if (!formState.name || !formState.email || !formState.message) {
       setFormStatus('error')
@@ -100,11 +100,31 @@ export default function App() {
     }
 
     setFormStatus('submitting')
-    // Mock sending API call
-    setTimeout(() => {
-      setFormStatus('success')
-      setFormState({ name: '', email: '', subject: '', message: '' })
-    }, 1500)
+
+    try {
+      const formData = new FormData()
+      formData.append('name', formState.name)
+      formData.append('email', formState.email)
+      formData.append('subject', formState.subject || "New Message from Portfolio")
+      formData.append('message', formState.message)
+
+      const response = await fetch("https://formsubmit.co/ajax/charansuriya2000@gmail.com", {
+        method: "POST",
+        body: formData,
+        headers: { 
+          "Accept": "application/json"
+        }
+      })
+
+      if (response.ok) {
+        setFormStatus('success')
+        setFormState({ name: '', email: '', subject: '', message: '' })
+      } else {
+        setFormStatus('error')
+      }
+    } catch (error) {
+      setFormStatus('error')
+    }
   }
 
   const handleNavClick = (sectionId: string) => {
@@ -211,26 +231,23 @@ export default function App() {
           </a>
 
           {/* Desktop Nav */}
-          <ul className="nav-links">
+          <ul className="nav-links" style={{ alignItems: 'center' }}>
             {['hero', 'about', 'projects', 'experience', 'education', 'contact'].map((sec) => (
               <li key={sec}>
                 <a
                   href={`#${sec}`}
                   onClick={(e) => { e.preventDefault(); handleNavClick(sec) }}
-                  className={`nav-link ${activeSection === sec ? 'active' : ''}`}
+                  className={`nav-link ${activeSection === sec ? 'active' : ''} ${sec === 'contact' ? 'nav-contact-highlight' : ''}`}
                 >
                   {sec.charAt(0).toUpperCase() + sec.slice(1)}
                 </a>
               </li>
             ))}
-            <li>
-              <button onClick={() => handleNavClick('contact')} className="cta-btn">Hire Me</button>
-            </li>
           </ul>
 
           {/* Mobile Menu Icon */}
-          <button 
-            onClick={() => setMobileMenuOpen(!mobileMenuOpen)} 
+          <button
+            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
             className="mobile-toggle-btn"
             aria-label="Toggle navigation menu"
           >
@@ -263,27 +280,28 @@ export default function App() {
               gap: '1.5rem'
             }}
           >
-            {['hero', 'about', 'projects', 'experience', 'education', 'contact'].map((sec) => (
-              <a
-                key={sec}
-                href={`#${sec}`}
-                onClick={(e) => { e.preventDefault(); handleNavClick(sec) }}
-                style={{
-                  fontSize: '1.1rem',
-                  fontWeight: 600,
-                  color: activeSection === sec ? 'var(--secondary)' : 'var(--text-muted)'
-                }}
-              >
-                {sec.charAt(0).toUpperCase() + sec.slice(1)}
-              </a>
-            ))}
-            <button
-              onClick={() => handleNavClick('contact')}
-              className="cta-btn"
-              style={{ width: '100%', textAlign: 'center', marginTop: '1rem' }}
-            >
-              Hire Me
-            </button>
+            {['hero', 'about', 'projects', 'experience', 'education', 'contact'].map((sec) => {
+              const isContact = sec === 'contact';
+              return (
+                <a
+                  key={sec}
+                  href={`#${sec}`}
+                  onClick={(e) => { e.preventDefault(); handleNavClick(sec) }}
+                  className={isContact ? 'cta-btn' : ''}
+                  style={isContact ? {
+                    textAlign: 'center',
+                    marginTop: '1rem',
+                    display: 'block'
+                  } : {
+                    fontSize: '1.1rem',
+                    fontWeight: 600,
+                    color: activeSection === sec ? 'var(--secondary)' : 'var(--text-muted)'
+                  }}
+                >
+                  {sec.charAt(0).toUpperCase() + sec.slice(1)}
+                </a>
+              );
+            })}
           </motion.div>
         )}
       </AnimatePresence>
@@ -306,12 +324,12 @@ export default function App() {
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 1, ease: [0.16, 1, 0.3, 1] as const }}
           >
-            <span className="hero-subtitle">MACHINE LEARNING ENGINEER</span>
+            <span className="hero-subtitle">SENIOR AI / ML DEVELOPER</span>
             <h1 className="hero-title">
               Hi, I'm <span>Gurucharan</span>.
             </h1>
             <p className="hero-description">
-              Expert in architecting end-to-end Machine Learning pipelines, deploying scalable models with GCP/PySpark, and building cognitive LLM/OpenCV solutions.
+              Specializing in delivering high-end AI solutions, intelligent chatbots, and enterprise-grade LLM architectures that drive innovation.
             </p>
             <div className="hero-buttons">
               <button onClick={() => handleNavClick('projects')} className="cta-btn">
@@ -331,18 +349,18 @@ export default function App() {
         <div className="about-grid">
           <motion.div className="about-bio glass-card" {...fadeInUp}>
             <p>
-              I am a results-driven Machine Learning Engineer with a strong background in building predictive systems, automating data pipelines, and implementing privacy-focused RAG systems.
+              I am a results-driven Senior AI/ML Developer focused on architecting high-end AI solutions, custom conversational chatbots, and robust LLM applications.
             </p>
             <p>
-              With expertise in Python, PySpark, OpenCV, and Google Cloud Platform, I translate complex data requirements into robust, production-ready AI solutions and scalable workflows.
+              With expertise in PySpark, OpenCV, and Google Cloud Platform, I translate complex data requirements into production-ready intelligence and scalable automated workflows.
             </p>
             <div style={{ display: 'flex', gap: '1.5rem', marginTop: '1rem' }}>
               <div style={{ display: 'flex', flexDirection: 'column' }}>
-                <span style={{ fontSize: '1.75rem', fontWeight: 700, color: 'var(--secondary)' }}>5+</span>
+                <span style={{ fontSize: '1.75rem', fontWeight: 700, color: 'var(--secondary)' }}>3+</span>
                 <span style={{ fontSize: '0.8rem', color: 'var(--text-dark)', fontWeight: 600 }}>Years Exp</span>
               </div>
               <div style={{ display: 'flex', flexDirection: 'column' }}>
-                <span style={{ fontSize: '1.75rem', fontWeight: 700, color: 'var(--primary)' }}>25+</span>
+                <span style={{ fontSize: '1.75rem', fontWeight: 700, color: 'var(--primary)' }}>5+</span>
                 <span style={{ fontSize: '0.8rem', color: 'var(--text-dark)', fontWeight: 600 }}>Projects Shipped</span>
               </div>
             </div>
