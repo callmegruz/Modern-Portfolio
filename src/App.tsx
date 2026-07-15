@@ -212,7 +212,7 @@ export default function App() {
           const fallbackResponse = await fetch("https://formsubmit.co/ajax/charansuriya2000@gmail.com", {
             method: "POST",
             body: formData,
-            headers: { 
+            headers: {
               "Accept": "application/json"
             }
           })
@@ -279,7 +279,7 @@ export default function App() {
 
   const experiences = [
     {
-      date: 'Sep 2023 — Present',
+      date: 'May 2026 — Present',
       role: 'Senior AI / ML Developer',
       company: 'TANSAM',
       desc: 'Delivering high-end AI solutions and architectures, and mentoring students and faculties through skill-up programs and advanced internships.'
@@ -511,11 +511,11 @@ export default function App() {
       <motion.section id="projects" className="section container" {...sectionReveal}>
         <motion.h2 className="section-title" {...fadeInUp}>Featured Projects</motion.h2>
         <motion.div
-            className="projects-grid"
-            variants={staggerContainer}
-            initial="initial"
-            whileInView="whileInView"
-            viewport={{ once: true, margin: '-100px' }}
+          className="projects-grid"
+          variants={staggerContainer}
+          initial="initial"
+          whileInView="whileInView"
+          viewport={{ once: true, margin: '-100px' }}
         >
           {projects.map((proj, idx) => (
             <motion.div
@@ -590,8 +590,8 @@ export default function App() {
               transition={{ duration: 0.5, delay: idx * 0.1 }}
               style={{ display: 'flex' }}
             >
-              <div 
-                className="glass-card tilt-card" 
+              <div
+                className="glass-card tilt-card"
                 {...tiltProps}
                 style={{ display: 'flex', flexDirection: 'column', gap: '1rem', textAlign: 'left', width: '100%' }}
               >

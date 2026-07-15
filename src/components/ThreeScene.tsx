@@ -191,55 +191,57 @@ function NeuralNetwork() {
   }
 
   return (
-    // Scale reduced slightly to 0.75 for a compact, neat alignment
-    <group ref={networkRef} position={[xOffset, yOffset, 0]} scale={0.75}>
-      
-      {/* Invisible Grab Zone overlay to make dragging easy and fluid */}
+    <>
+      {/* Viewport-wide grab overlay to allow dragging anywhere on the canvas */}
       <mesh
+        position={[0, 0, -1]}
         onPointerDown={handlePointerDown}
         onPointerUp={handlePointerUp}
         onPointerOver={handlePointerOver}
         onPointerOut={handlePointerOut}
       >
-        <sphereGeometry args={[2.4, 16, 16]} />
+        <planeGeometry args={[viewport.width * 3, viewport.height * 3]} />
         <meshBasicMaterial transparent opacity={0} depthWrite={false} />
       </mesh>
 
-      {/* Synapses */}
-      <lineSegments geometry={synapsesGeometry}>
-        <lineBasicMaterial
-          color="#06b6d4"
-          opacity={0.22}
-          transparent
-          linewidth={1}
-        />
-      </lineSegments>
-
-      {/* Nodes */}
-      {nodes.map((node) => (
-        <mesh key={node.id} position={node.pos}>
-          <sphereGeometry args={[0.11, 16, 16]} />
-          <meshStandardMaterial
-            color={node.layer === 0 ? '#06b6d4' : node.layer === 3 ? '#ec4899' : '#8b5cf6'}
-            metalness={0.9}
-            roughness={0.1}
-            emissive={node.layer === 0 ? '#06b6d4' : node.layer === 3 ? '#ec4899' : '#8b5cf6'}
-            emissiveIntensity={0.25}
+      {/* Rotating Neural Network group */}
+      <group ref={networkRef} position={[xOffset, yOffset, 0]} scale={0.75}>
+        {/* Synapses */}
+        <lineSegments geometry={synapsesGeometry}>
+          <lineBasicMaterial
+            color="#06b6d4"
+            opacity={0.22}
+            transparent
+            linewidth={1}
           />
-        </mesh>
-      ))}
+        </lineSegments>
 
-      {/* Active Signal Pulses */}
-      {Array.from({ length: 22 }).map((_, idx) => (
-        <mesh
-          key={`signal-${idx}`}
-          ref={(el) => { signalMeshesRef.current[idx] = el }}
-        >
-          <sphereGeometry args={[0.055, 8, 8]} />
-          <meshBasicMaterial color="#ec4899" />
-        </mesh>
-      ))}
-    </group>
+        {/* Nodes */}
+        {nodes.map((node) => (
+          <mesh key={node.id} position={node.pos}>
+            <sphereGeometry args={[0.11, 16, 16]} />
+            <meshStandardMaterial
+              color={node.layer === 0 ? '#06b6d4' : node.layer === 3 ? '#ec4899' : '#8b5cf6'}
+              metalness={0.9}
+              roughness={0.1}
+              emissive={node.layer === 0 ? '#06b6d4' : node.layer === 3 ? '#ec4899' : '#8b5cf6'}
+              emissiveIntensity={0.25}
+            />
+          </mesh>
+        ))}
+
+        {/* Active Signal Pulses */}
+        {Array.from({ length: 22 }).map((_, idx) => (
+          <mesh
+            key={`signal-${idx}`}
+            ref={(el) => { signalMeshesRef.current[idx] = el }}
+          >
+            <sphereGeometry args={[0.055, 8, 8]} />
+            <meshBasicMaterial color="#ec4899" />
+          </mesh>
+        ))}
+      </group>
+    </>
   )
 }
 
