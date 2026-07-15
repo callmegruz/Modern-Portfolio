@@ -31,14 +31,14 @@ import ProjectCanvas3D from './components/ProjectCanvas'
 const fadeInUp = {
   initial: { opacity: 0, y: 40 },
   whileInView: { opacity: 1, y: 0 },
-  viewport: { once: true, margin: '-100px' },
+  viewport: { once: false, margin: '-100px' },
   transition: { duration: 0.8, ease: [0.16, 1, 0.3, 1] as const }
 }
 
 const sectionReveal = {
   initial: { opacity: 0, scale: 0.95, y: 60 },
   whileInView: { opacity: 1, scale: 1, y: 0 },
-  viewport: { once: true, amount: 0.12 },
+  viewport: { once: false, amount: 0.12 },
   transition: { duration: 0.85, ease: [0.16, 1, 0.3, 1] as const }
 }
 
@@ -49,7 +49,7 @@ const staggerContainer = {
       staggerChildren: 0.1
     }
   },
-  viewport: { once: true, margin: '-100px' }
+  viewport: { once: false, margin: '-100px' }
 }
 
 const tiltProps = {
@@ -74,6 +74,22 @@ const tiltProps = {
     card.style.setProperty('--ry', '0deg')
     card.style.setProperty('--tz', '0px')
   }
+}
+
+const renderHoverLetters = (text: string, isName = false) => {
+  return text.split('').map((char, index) => {
+    if (char === ' ') {
+      return <span key={index}>&nbsp;</span>
+    }
+    return (
+      <span
+        key={index}
+        className={`hover-letter ${isName ? 'hover-letter-name' : ''}`}
+      >
+        {char}
+      </span>
+    )
+  })
 }
 
 export default function App() {
@@ -330,7 +346,7 @@ export default function App() {
         <div className="container nav-container">
           <a href="#hero" onClick={(e) => { e.preventDefault(); handleNavClick('hero') }} className="logo-text">
             <Sparkles size={20} className="glow-icon" />
-            <span>GURU.AI</span>
+            <span>CALLMEGRUZ</span>
           </a>
 
           <div style={{ display: 'flex', alignItems: 'center', gap: '1.25rem' }}>
@@ -440,7 +456,11 @@ export default function App() {
           >
             <span className="hero-subtitle">SENIOR AI / ML DEVELOPER</span>
             <h1 className="hero-title">
-              Hi, I'm <span>Gurucharan</span>.
+              {renderHoverLetters("Hi, I'm ")}
+              <span className="name-wrapper">
+                {renderHoverLetters("Gurucharan", true)}
+              </span>
+              {renderHoverLetters(".")}
             </h1>
             <p className="hero-description">
               Specializing in delivering high-end AI solutions, intelligent chatbots, and enterprise-grade LLM architectures that drive innovation.
@@ -562,11 +582,11 @@ export default function App() {
               className="timeline-item"
               initial={{ opacity: 0, x: idx % 2 === 0 ? -50 : 50 }}
               whileInView={{ opacity: 1, x: 0 }}
-              viewport={{ once: true, margin: '-100px' }}
+              viewport={{ once: false, margin: '-100px' }}
               transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] as const }}
             >
               <div className="timeline-dot"></div>
-              <div className="timeline-content tilt-card" {...tiltProps}>
+              <div className="timeline-content glass-card tilt-card" {...tiltProps}>
                 <span className="timeline-date">{exp.date}</span>
                 <h3 className="timeline-role">{exp.role}</h3>
                 <div className="timeline-company">{exp.company}</div>
@@ -586,7 +606,7 @@ export default function App() {
               key={idx}
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
+              viewport={{ once: false }}
               transition={{ duration: 0.5, delay: idx * 0.1 }}
               style={{ display: 'flex' }}
             >
