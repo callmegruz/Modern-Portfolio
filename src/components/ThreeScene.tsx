@@ -35,7 +35,7 @@ function NeuralNetwork() {
   const isMobile = viewport.width < 7
   // Sweet spot divisor of 3.7 balances it between main content and right page edge
   const xOffset = isMobile ? 0 : viewport.width / 3.7
-  const yOffset = isMobile ? 1.0 : 0
+  const yOffset = isMobile ? 0.05 : 0
 
   // 1. Generate nodes locally around [0,0,0]
   const nodes = useMemo(() => {

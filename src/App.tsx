@@ -20,7 +20,9 @@ import {
   Menu,
   X,
   Copy,
-  Check
+  Check,
+  Sun,
+  Moon
 } from 'lucide-react'
 import Canvas3D from './components/Canvas3D'
 import ProjectCanvas3D from './components/ProjectCanvas'
@@ -50,7 +52,47 @@ const staggerContainer = {
   viewport: { once: true, margin: '-100px' }
 }
 
+const tiltProps = {
+  onMouseMove: (e: React.MouseEvent<HTMLElement>) => {
+    const card = e.currentTarget
+    const rect = card.getBoundingClientRect()
+    const x = e.clientX - rect.left
+    const y = e.clientY - rect.top
+    const xc = rect.width / 2
+    const yc = rect.height / 2
+    const dx = (x - xc) / xc
+    const dy = (y - yc) / yc
+    card.style.setProperty('--rx', `${dy * -12}deg`)
+    card.style.setProperty('--ry', `${dx * 12}deg`)
+  },
+  onMouseEnter: (e: React.MouseEvent<HTMLElement>) => {
+    e.currentTarget.style.setProperty('--tz', '15px')
+  },
+  onMouseLeave: (e: React.MouseEvent<HTMLElement>) => {
+    const card = e.currentTarget
+    card.style.setProperty('--rx', '0deg')
+    card.style.setProperty('--ry', '0deg')
+    card.style.setProperty('--tz', '0px')
+  }
+}
+
 export default function App() {
+  const [theme, setTheme] = useState<'dark' | 'light'>(() => {
+    if (typeof window !== 'undefined') {
+      return (localStorage.getItem('theme') as 'dark' | 'light') || 'dark'
+    }
+    return 'dark'
+  })
+
+  useEffect(() => {
+    if (theme === 'light') {
+      document.documentElement.classList.add('light-mode')
+    } else {
+      document.documentElement.classList.remove('light-mode')
+    }
+    localStorage.setItem('theme', theme)
+  }, [theme])
+
   const [scrolled, setScrolled] = useState(false)
   const [activeSection, setActiveSection] = useState('hero')
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
@@ -291,29 +333,40 @@ export default function App() {
             <span>GURU.AI</span>
           </a>
 
-          {/* Desktop Nav */}
-          <ul className="nav-links" style={{ alignItems: 'center' }}>
-            {['hero', 'about', 'projects', 'experience', 'education', 'contact'].map((sec) => (
-              <li key={sec}>
-                <a
-                  href={`#${sec}`}
-                  onClick={(e) => { e.preventDefault(); handleNavClick(sec) }}
-                  className={`nav-link ${activeSection === sec ? 'active' : ''} ${sec === 'contact' ? 'nav-contact-highlight' : ''}`}
-                >
-                  {sec.charAt(0).toUpperCase() + sec.slice(1)}
-                </a>
-              </li>
-            ))}
-          </ul>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '1.25rem' }}>
+            {/* Desktop Nav */}
+            <ul className="nav-links" style={{ alignItems: 'center' }}>
+              {['hero', 'about', 'projects', 'experience', 'education', 'contact'].map((sec) => (
+                <li key={sec}>
+                  <a
+                    href={`#${sec}`}
+                    onClick={(e) => { e.preventDefault(); handleNavClick(sec) }}
+                    className={`nav-link ${activeSection === sec ? 'active' : ''} ${sec === 'contact' ? 'nav-contact-highlight' : ''}`}
+                  >
+                    {sec.charAt(0).toUpperCase() + sec.slice(1)}
+                  </a>
+                </li>
+              ))}
+            </ul>
 
-          {/* Mobile Menu Icon */}
-          <button
-            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-            className="mobile-toggle-btn"
-            aria-label="Toggle navigation menu"
-          >
-            {mobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
-          </button>
+            {/* Theme Toggle Button */}
+            <button
+              onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
+              className="theme-toggle"
+              aria-label="Toggle theme"
+            >
+              {theme === 'dark' ? <Sun size={20} /> : <Moon size={20} />}
+            </button>
+
+            {/* Mobile Menu Icon */}
+            <button
+              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+              className="mobile-toggle-btn"
+              aria-label="Toggle navigation menu"
+            >
+              {mobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
+            </button>
+          </div>
         </div>
       </header>
 
@@ -408,21 +461,23 @@ export default function App() {
       <motion.section id="about" className="section container" {...sectionReveal}>
         <motion.h2 className="section-title" {...fadeInUp}>About Me</motion.h2>
         <div className="about-grid">
-          <motion.div className="about-bio glass-card" {...fadeInUp}>
-            <p>
-              I am a results-driven Senior AI/ML Developer focused on architecting high-end AI solutions, custom conversational chatbots, and robust LLM applications.
-            </p>
-            <p>
-              With expertise in PySpark, OpenCV, and Google Cloud Platform, I translate complex data requirements into production-ready intelligence and scalable automated workflows.
-            </p>
-            <div style={{ display: 'flex', gap: '1.5rem', marginTop: '1rem' }}>
-              <div style={{ display: 'flex', flexDirection: 'column' }}>
-                <span style={{ fontSize: '1.75rem', fontWeight: 700, color: 'var(--secondary)' }}>3+</span>
-                <span style={{ fontSize: '0.8rem', color: 'var(--text-dark)', fontWeight: 600 }}>Years Exp</span>
-              </div>
-              <div style={{ display: 'flex', flexDirection: 'column' }}>
-                <span style={{ fontSize: '1.75rem', fontWeight: 700, color: 'var(--primary)' }}>5+</span>
-                <span style={{ fontSize: '0.8rem', color: 'var(--text-dark)', fontWeight: 600 }}>Projects Shipped</span>
+          <motion.div className="about-bio" {...fadeInUp}>
+            <div className="glass-card tilt-card" {...tiltProps} style={{ height: '100%', display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
+              <p>
+                I am a results-driven Senior AI/ML Developer focused on architecting high-end AI solutions, custom conversational chatbots, and robust LLM applications.
+              </p>
+              <p>
+                With expertise in PySpark, OpenCV, and Google Cloud Platform, I translate complex data requirements into production-ready intelligence and scalable automated workflows.
+              </p>
+              <div style={{ display: 'flex', gap: '1.5rem', marginTop: '1.5rem' }}>
+                <div style={{ display: 'flex', flexDirection: 'column' }}>
+                  <span style={{ fontSize: '1.75rem', fontWeight: 700, color: 'var(--secondary)' }}>3+</span>
+                  <span style={{ fontSize: '0.8rem', color: 'var(--text-dark)', fontWeight: 600 }}>Years Exp</span>
+                </div>
+                <div style={{ display: 'flex', flexDirection: 'column' }}>
+                  <span style={{ fontSize: '1.75rem', fontWeight: 700, color: 'var(--primary)' }}>5+</span>
+                  <span style={{ fontSize: '0.8rem', color: 'var(--text-dark)', fontWeight: 600 }}>Projects Shipped</span>
+                </div>
               </div>
             </div>
           </motion.div>
@@ -437,14 +492,15 @@ export default function App() {
             {skills.map((skill, index) => (
               <motion.div
                 key={index}
-                className="skill-tag"
                 variants={{
                   initial: { opacity: 0, y: 20 },
                   whileInView: { opacity: 1, y: 0, transition: { duration: 0.5 } }
                 }}
               >
-                <div className="skill-icon-wrapper">{skill.icon}</div>
-                <span className="skill-name">{skill.name}</span>
+                <div className="skill-tag tilt-card" {...tiltProps}>
+                  <div className="skill-icon-wrapper">{skill.icon}</div>
+                  <span className="skill-name">{skill.name}</span>
+                </div>
               </motion.div>
             ))}
           </motion.div>
@@ -455,39 +511,40 @@ export default function App() {
       <motion.section id="projects" className="section container" {...sectionReveal}>
         <motion.h2 className="section-title" {...fadeInUp}>Featured Projects</motion.h2>
         <motion.div
-          className="projects-grid"
-          variants={staggerContainer}
-          initial="initial"
-          whileInView="whileInView"
-          viewport={{ once: true, margin: '-100px' }}
+            className="projects-grid"
+            variants={staggerContainer}
+            initial="initial"
+            whileInView="whileInView"
+            viewport={{ once: true, margin: '-100px' }}
         >
           {projects.map((proj, idx) => (
             <motion.div
               key={idx}
-              className="project-card glass-card"
               variants={{
                 initial: { opacity: 0, y: 30 },
                 whileInView: { opacity: 1, y: 0, transition: { duration: 0.6 } }
               }}
             >
-              <div className="project-img-wrapper" style={{ position: 'relative', overflow: 'hidden' }}>
-                <ProjectCanvas3D type={proj.type} />
-              </div>
-              <div className="project-info">
-                <div className="project-tags">
-                  {proj.tags.map((t) => (
-                    <span key={t} className="project-tag">{t}</span>
-                  ))}
+              <div className="project-card glass-card tilt-card" {...tiltProps}>
+                <div className="project-img-wrapper" style={{ position: 'relative', overflow: 'hidden' }}>
+                  <ProjectCanvas3D type={proj.type} />
                 </div>
-                <h3 className="project-title">{proj.title}</h3>
-                <p className="project-desc">{proj.desc}</p>
-                <div className="project-links">
-                  <a href={proj.github} className="project-link">
-                    <Github size={16} /> Code
-                  </a>
-                  <a href={proj.demo} className="project-link">
-                    <ExternalLink size={16} /> Live Demo
-                  </a>
+                <div className="project-info">
+                  <div className="project-tags">
+                    {proj.tags.map((t) => (
+                      <span key={t} className="project-tag">{t}</span>
+                    ))}
+                  </div>
+                  <h3 className="project-title">{proj.title}</h3>
+                  <p className="project-desc">{proj.desc}</p>
+                  <div className="project-links">
+                    <a href={proj.github} className="project-link">
+                      <Github size={16} /> Code
+                    </a>
+                    <a href={proj.demo} className="project-link">
+                      <ExternalLink size={16} /> Live Demo
+                    </a>
+                  </div>
                 </div>
               </div>
             </motion.div>
@@ -509,7 +566,7 @@ export default function App() {
               transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] as const }}
             >
               <div className="timeline-dot"></div>
-              <div className="timeline-content">
+              <div className="timeline-content tilt-card" {...tiltProps}>
                 <span className="timeline-date">{exp.date}</span>
                 <h3 className="timeline-role">{exp.role}</h3>
                 <div className="timeline-company">{exp.company}</div>
@@ -527,27 +584,32 @@ export default function App() {
           {education.map((edu, idx) => (
             <motion.div
               key={idx}
-              className="glass-card"
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.5, delay: idx * 0.1 }}
-              style={{ display: 'flex', flexDirection: 'column', gap: '1rem', textAlign: 'left' }}
+              style={{ display: 'flex' }}
             >
-              <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
-                <div style={{ color: 'var(--secondary)' }}>
-                  <GraduationCap size={32} />
+              <div 
+                className="glass-card tilt-card" 
+                {...tiltProps}
+                style={{ display: 'flex', flexDirection: 'column', gap: '1rem', textAlign: 'left', width: '100%' }}
+              >
+                <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+                  <div style={{ color: 'var(--secondary)' }}>
+                    <GraduationCap size={32} />
+                  </div>
+                  <div>
+                    <span style={{ fontSize: '0.85rem', fontFamily: 'var(--font-mono)', color: 'var(--secondary)' }}>
+                      {edu.date}
+                    </span>
+                    <h3 style={{ fontSize: '1.15rem', fontWeight: 600, marginTop: '0.25rem' }}>{edu.degree}</h3>
+                  </div>
                 </div>
                 <div>
-                  <span style={{ fontSize: '0.85rem', fontFamily: 'var(--font-mono)', color: 'var(--secondary)' }}>
-                    {edu.date}
-                  </span>
-                  <h3 style={{ fontSize: '1.15rem', fontWeight: 600, marginTop: '0.25rem' }}>{edu.degree}</h3>
+                  <p style={{ fontWeight: 600, color: 'var(--text-primary)' }}>{edu.school}</p>
+                  <p style={{ fontSize: '0.9rem', color: 'var(--text-dark)', marginTop: '0.1rem' }}>{edu.location}</p>
                 </div>
-              </div>
-              <div>
-                <p style={{ fontWeight: 600, color: 'var(--text-primary)' }}>{edu.school}</p>
-                <p style={{ fontSize: '0.9rem', color: 'var(--text-dark)', marginTop: '0.1rem' }}>{edu.location}</p>
               </div>
             </motion.div>
           ))}
@@ -558,7 +620,7 @@ export default function App() {
       <motion.section id="contact" className="section container" {...sectionReveal}>
         <div className="contact-grid-layout">
           {/* Left Column: Direct Info & Socials */}
-          <div className="contact-info-panel glass-card">
+          <div className="contact-info-panel glass-card tilt-card" {...tiltProps}>
             <div className="contact-info-header">
               <Mail size={36} style={{ color: 'var(--secondary)', marginBottom: '1rem' }} />
               <h2 style={{ fontSize: '2.25rem', marginBottom: '0.5rem' }}>Let's Connect</h2>
@@ -566,7 +628,7 @@ export default function App() {
             </div>
 
             <div className="contact-details">
-              <div className="contact-detail-card">
+              <div className="contact-detail-card tilt-card" {...tiltProps}>
                 <span className="detail-label">Email Address</span>
                 <span className="detail-value">charansuriya2000@gmail.com</span>
                 <div className="detail-actions">
@@ -587,21 +649,21 @@ export default function App() {
                 </div>
               </div>
 
-              <div className="contact-detail-card">
+              <div className="contact-detail-card tilt-card" {...tiltProps}>
                 <span className="detail-label">Professional Networks</span>
                 <div className="social-links-grid">
-                  <a href="https://linkedin.com/in/gurucharan-s" target="_blank" rel="noreferrer" className="social-action-card" id="contact-linkedin">
+                  <a href="https://linkedin.com/in/gurucharan-s" target="_blank" rel="noreferrer" className="social-action-card tilt-card" id="contact-linkedin" {...tiltProps}>
                     <Linkedin size={20} />
                     <span>LinkedIn</span>
                   </a>
-                  <a href="https://github.com/callmegruz" target="_blank" rel="noreferrer" className="social-action-card" id="contact-github">
+                  <a href="https://github.com/callmegruz" target="_blank" rel="noreferrer" className="social-action-card tilt-card" id="contact-github" {...tiltProps}>
                     <Github size={20} />
                     <span>GitHub</span>
                   </a>
                 </div>
               </div>
 
-              <div className="contact-detail-card response-promise-card">
+              <div className="contact-detail-card response-promise-card tilt-card" {...tiltProps}>
                 <div className="promise-badge">
                   <Sparkles size={14} />
                   <span>Availability & Reply</span>
@@ -614,7 +676,7 @@ export default function App() {
           </div>
 
           {/* Right Column: Contact Form */}
-          <div className="contact-form-panel glass-card">
+          <div className="contact-form-panel glass-card tilt-card" {...tiltProps}>
             <h3 style={{ fontSize: '1.75rem', marginBottom: '1.5rem' }}>Send a Message</h3>
             <form className="contact-form" onSubmit={handleContactSubmit}>
               <div className="form-group">
