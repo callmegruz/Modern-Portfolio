@@ -600,39 +600,43 @@ export default function App() {
       {/* Education Section */}
       <motion.section id="education" className="section container" {...sectionReveal}>
         <motion.h2 className="section-title" {...fadeInUp}>Education</motion.h2>
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '2rem' }}>
-          {education.map((edu, idx) => (
-            <motion.div
-              key={idx}
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: false }}
-              transition={{ duration: 0.5, delay: idx * 0.1 }}
-              style={{ display: 'flex' }}
-            >
-              <div
-                className="glass-card tilt-card"
-                {...tiltProps}
-                style={{ display: 'flex', flexDirection: 'column', gap: '1rem', textAlign: 'left', width: '100%' }}
+        <div className="horizontal-timeline">
+          {[...education].reverse().map((edu, idx) => {
+            const isEven = idx % 2 === 0;
+            return (
+              <motion.div
+                key={idx}
+                className={`horizontal-timeline-item ${isEven ? 'up' : 'down'}`}
+                initial={{ opacity: 0, y: isEven ? -30 : 30 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: false }}
+                transition={{ duration: 0.6, delay: idx * 0.1 }}
               >
-                <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
-                  <div style={{ color: 'var(--secondary)' }}>
-                    <GraduationCap size={32} />
+                <div className="horizontal-timeline-dot"></div>
+                <div 
+                  className="glass-card tilt-card" 
+                  {...tiltProps}
+                  style={{ display: 'flex', flexDirection: 'column', gap: '1rem', textAlign: 'left', width: '100%' }}
+                >
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+                    <div style={{ color: 'var(--secondary)' }}>
+                      <GraduationCap size={32} />
+                    </div>
+                    <div>
+                      <span style={{ fontSize: '0.85rem', fontFamily: 'var(--font-mono)', color: 'var(--secondary)' }}>
+                        {edu.date}
+                      </span>
+                      <h3 style={{ fontSize: '1.15rem', fontWeight: 600, marginTop: '0.25rem' }}>{edu.degree}</h3>
+                    </div>
                   </div>
                   <div>
-                    <span style={{ fontSize: '0.85rem', fontFamily: 'var(--font-mono)', color: 'var(--secondary)' }}>
-                      {edu.date}
-                    </span>
-                    <h3 style={{ fontSize: '1.15rem', fontWeight: 600, marginTop: '0.25rem' }}>{edu.degree}</h3>
+                    <p style={{ fontWeight: 600, color: 'var(--text-primary)' }}>{edu.school}</p>
+                    <p style={{ fontSize: '0.9rem', color: 'var(--text-dark)', marginTop: '0.1rem' }}>{edu.location}</p>
                   </div>
                 </div>
-                <div>
-                  <p style={{ fontWeight: 600, color: 'var(--text-primary)' }}>{edu.school}</p>
-                  <p style={{ fontSize: '0.9rem', color: 'var(--text-dark)', marginTop: '0.1rem' }}>{edu.location}</p>
-                </div>
-              </div>
-            </motion.div>
-          ))}
+              </motion.div>
+            );
+          })}
         </div>
       </motion.section>
 
