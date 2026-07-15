@@ -209,7 +209,7 @@ function NeuralNetwork() {
         {/* Synapses */}
         <lineSegments geometry={synapsesGeometry}>
           <lineBasicMaterial
-            color="#06b6d4"
+            color="#06d6a0"
             opacity={0.22}
             transparent
             linewidth={1}
@@ -221,10 +221,10 @@ function NeuralNetwork() {
           <mesh key={node.id} position={node.pos}>
             <sphereGeometry args={[0.11, 16, 16]} />
             <meshStandardMaterial
-              color={node.layer === 0 ? '#06b6d4' : node.layer === 3 ? '#ec4899' : '#8b5cf6'}
+              color={node.layer === 0 ? '#06d6a0' : node.layer === 3 ? '#ff9f1c' : '#ef476f'}
               metalness={0.9}
               roughness={0.1}
-              emissive={node.layer === 0 ? '#06b6d4' : node.layer === 3 ? '#ec4899' : '#8b5cf6'}
+              emissive={node.layer === 0 ? '#06d6a0' : node.layer === 3 ? '#ff9f1c' : '#ef476f'}
               emissiveIntensity={0.25}
             />
           </mesh>
@@ -237,7 +237,7 @@ function NeuralNetwork() {
             ref={(el) => { signalMeshesRef.current[idx] = el }}
           >
             <sphereGeometry args={[0.055, 8, 8]} />
-            <meshBasicMaterial color="#ec4899" />
+            <meshBasicMaterial color="#ff9f1c" />
           </mesh>
         ))}
       </group>
