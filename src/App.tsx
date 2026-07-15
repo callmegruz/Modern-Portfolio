@@ -31,7 +31,7 @@ import ProjectCanvas3D from './components/ProjectCanvas'
 const fadeInUp = {
   initial: { opacity: 0, y: 40 },
   whileInView: { opacity: 1, y: 0 },
-  viewport: { once: false, margin: '-100px' },
+  viewport: { once: false, margin: '-20px' },
   transition: { duration: 0.8, ease: [0.16, 1, 0.3, 1] as const }
 }
 
@@ -49,11 +49,12 @@ const staggerContainer = {
       staggerChildren: 0.1
     }
   },
-  viewport: { once: false, margin: '-100px' }
+  viewport: { once: false, margin: '-20px' }
 }
 
 const tiltProps = {
   onMouseMove: (e: React.MouseEvent<HTMLElement>) => {
+    if (typeof window !== 'undefined' && window.matchMedia && !window.matchMedia('(hover: hover)').matches) return
     const card = e.currentTarget
     const rect = card.getBoundingClientRect()
     const x = e.clientX - rect.left
@@ -66,6 +67,7 @@ const tiltProps = {
     card.style.setProperty('--ry', `${dx * 12}deg`)
   },
   onMouseEnter: (e: React.MouseEvent<HTMLElement>) => {
+    if (typeof window !== 'undefined' && window.matchMedia && !window.matchMedia('(hover: hover)').matches) return
     e.currentTarget.style.setProperty('--tz', '15px')
   },
   onMouseLeave: (e: React.MouseEvent<HTMLElement>) => {
@@ -507,7 +509,7 @@ export default function App() {
             variants={staggerContainer}
             initial="initial"
             whileInView="whileInView"
-            viewport={{ once: true, margin: '-100px' }}
+            viewport={{ once: true, margin: '-20px' }}
           >
             {skills.map((skill, index) => (
               <motion.div
@@ -535,7 +537,7 @@ export default function App() {
           variants={staggerContainer}
           initial="initial"
           whileInView="whileInView"
-          viewport={{ once: true, margin: '-100px' }}
+          viewport={{ once: true, margin: '-20px' }}
         >
           {projects.map((proj, idx) => (
             <motion.div
@@ -582,7 +584,7 @@ export default function App() {
               className="timeline-item"
               initial={{ opacity: 0, x: idx % 2 === 0 ? -50 : 50 }}
               whileInView={{ opacity: 1, x: 0 }}
-              viewport={{ once: false, margin: '-100px' }}
+              viewport={{ once: false, margin: '-20px' }}
               transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] as const }}
             >
               <div className="timeline-dot"></div>

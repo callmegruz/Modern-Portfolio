@@ -336,15 +336,30 @@ a {
   font-weight: inherit;
 }
 
-.hover-letter:hover {
-  transform: translateY(-5px) scale(1.18) rotate(4deg);
-  color: var(--secondary);
-  text-shadow: 0 0 15px var(--secondary-glow);
-}
+@media (hover: hover) {
+  .hover-letter:hover {
+    transform: translateY(-5px) scale(1.18) rotate(4deg);
+    color: var(--secondary);
+    text-shadow: 0 0 15px var(--secondary-glow);
+  }
 
-:root.light-mode .hover-letter:hover {
-  color: var(--primary);
-  text-shadow: 0 0 10px var(--primary-glow);
+  :root.light-mode .hover-letter:hover {
+    color: var(--primary);
+    text-shadow: 0 0 10px var(--primary-glow);
+  }
+
+  .hover-letter-name:hover {
+    background: none !important;
+    -webkit-background-clip: unset !important;
+    -webkit-text-fill-color: var(--accent) !important;
+    color: var(--accent) !important;
+    text-shadow: 0 0 20px rgba(255, 159, 28, 0.8);
+    transform: translateY(-8px) scale(1.22) rotate(-4deg);
+  }
+
+  :root.light-mode .hover-letter-name:hover {
+    text-shadow: 0 0 15px rgba(230, 92, 0, 0.6);
+  }
 }
 
 /* Name wrapper to hold the gradient */
@@ -362,20 +377,6 @@ a {
   -webkit-text-fill-color: transparent;
   background: inherit;
   -webkit-background-clip: text;
-}
-
-.hover-letter-name:hover {
-  /* On hover, pop the letter out of the gradient into solid neon hot pink with neon glow */
-  background: none !important;
-  -webkit-background-clip: unset !important;
-  -webkit-text-fill-color: var(--accent) !important;
-  color: var(--accent) !important;
-  text-shadow: 0 0 20px rgba(236, 72, 153, 0.8);
-  transform: translateY(-8px) scale(1.22) rotate(-4deg);
-}
-
-:root.light-mode .hover-letter-name:hover {
-  text-shadow: 0 0 15px rgba(219, 39, 119, 0.6);
 }
 
 .hero-description {
@@ -1216,6 +1217,7 @@ a {
     width: 100% !important;
     order: 1;
     margin-bottom: 1rem;
+    pointer-events: none !important; /* Touch/scroll pass-through on mobile */
   }
   
   .hero-wrapper {
