@@ -1172,15 +1172,19 @@ a {
 
 @media (max-width: 768px) {
   .section {
-    padding-top: 4.5rem !important;
-    padding-bottom: 4.5rem !important;
+    padding-top: 2rem !important;
+    padding-bottom: 2rem !important;
     padding-left: 0 !important;
     padding-right: 0 !important;
   }
 
+  .section:not(#hero) {
+    border-top: 1px solid var(--border-glass) !important;
+  }
+
   .section-title {
     display: block;
-    margin: 0 auto 2.5rem auto !important; /* Increase space below section headers */
+    margin: 0 auto 2rem auto !important; /* Spacing below section headers adjusted to industry standard */
     text-align: center;
     width: fit-content;
     font-size: 2.15rem;
@@ -1200,7 +1204,12 @@ a {
   }
   
   .mobile-toggle-btn {
-    display: block;
+    display: flex !important;
+    align-items: center;
+    justify-content: center;
+    min-width: 44px;
+    min-height: 44px;
+    padding: 0.5rem;
   }
   
   /* Hero layout vertical stacking on mobile to prevent canvas/text overlap */
@@ -1236,9 +1245,18 @@ a {
     text-align: center;
   }
 
+  .hero-subtitle {
+    margin-bottom: 0.75rem !important; /* Tighter micro-spacing */
+  }
+
   .hero-title {
     font-size: 2.5rem; /* Slightly smaller to fit mobile screens perfectly */
     line-height: 1.1;
+    margin-bottom: 1rem !important; /* Tighter micro-spacing */
+  }
+
+  .hero-description {
+    margin-bottom: 1.5rem !important; /* Balanced element spacing */
   }
   
   .hero-buttons {
@@ -1247,9 +1265,24 @@ a {
     gap: 1rem;
   }
   
-  .cta-btn, .btn-secondary {
-    width: 100%;
+  .cta-btn, .btn-secondary, .submit-btn {
+    width: 100% !important;
     text-align: center;
+    min-height: 44px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.75rem 1.5rem !important;
+    box-sizing: border-box;
+  }
+
+  .theme-toggle {
+    width: 44px !important;
+    height: 44px !important;
+  }
+
+  .contact-form {
+    gap: 1rem !important; /* Standard gap between elements */
   }
 
   /* Card and container gutters to prevent them from stretching to the screen edges */
@@ -1260,7 +1293,7 @@ a {
   }
 
   .glass-card {
-    padding: 1.5rem !important; /* Cozy padding */
+    padding: 1rem !important; /* Cozy standard padding */
     margin-left: 0.25rem !important;
     margin-right: 0.25rem !important;
     width: auto !important; /* Fit and neat on the screen */
@@ -1274,6 +1307,14 @@ a {
   .horizontal-timeline-item {
     padding-left: 3.5rem !important;
     padding-right: 0.25rem !important;
+  }
+
+  .footer-social-link {
+    min-width: 44px;
+    min-height: 44px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
   }
   
   .footer-content {

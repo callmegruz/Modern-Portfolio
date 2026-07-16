@@ -409,7 +409,7 @@ export default function App() {
               padding: '2rem 1.5rem',
               display: 'flex',
               flexDirection: 'column',
-              gap: '1.5rem'
+              gap: '1rem'
             }}
           >
             {['hero', 'about', 'projects', 'experience', 'education', 'contact'].map((sec) => {
@@ -427,7 +427,9 @@ export default function App() {
                   } : {
                     fontSize: '1.1rem',
                     fontWeight: 600,
-                    color: activeSection === sec ? 'var(--secondary)' : 'var(--text-muted)'
+                    color: activeSection === sec ? 'var(--secondary)' : 'var(--text-muted)',
+                    padding: '0.8rem 0',
+                    display: 'block'
                   }}
                 >
                   {sec.charAt(0).toUpperCase() + sec.slice(1)}
