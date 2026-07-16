@@ -33,8 +33,8 @@ export default function CustomCursor() {
         const dx = mouseRef.current.x - prev.x
         const dy = mouseRef.current.y - prev.y
         return {
-          x: prev.x + dx * 0.15,
-          y: prev.y + dy * 0.15
+          x: prev.x + dx * 0.3,
+          y: prev.y + dy * 0.3
         }
       })
       requestRef.current = requestAnimationFrame(animateTrail)
@@ -78,41 +78,56 @@ export default function CustomCursor() {
 
   return (
     <>
-      {/* Inner Dot */}
+      {/* Inner Dot Wrapper (instant translation) */}
       <div
         style={{
           position: 'fixed',
           top: 0,
           left: 0,
-          width: '8px',
-          height: '8px',
-          backgroundColor: 'var(--secondary)',
-          borderRadius: '50%',
-          transform: `translate3d(${position.x - 4}px, ${position.y - 4}px, 0) scale(${isHovered ? 0.5 : 1})`,
-          transition: 'transform 0.1s ease-out, background-color 0.2s ease',
+          transform: `translate3d(${position.x - 4}px, ${position.y - 4}px, 0)`,
           pointerEvents: 'none',
           zIndex: 9999,
           mixBlendMode: 'difference'
         }}
-      />
-      {/* Outer Ring */}
+      >
+        {/* Inner Dot Content (hover scale/color transition only) */}
+        <div
+          style={{
+            width: '8px',
+            height: '8px',
+            backgroundColor: 'var(--secondary)',
+            borderRadius: '50%',
+            transform: `scale(${isHovered ? 0.5 : 1})`,
+            transition: 'transform 0.1s ease-out, background-color 0.2s ease'
+          }}
+        />
+      </div>
+
+      {/* Outer Ring Wrapper (lerp translation) */}
       <div
         style={{
           position: 'fixed',
           top: 0,
           left: 0,
-          width: '32px',
-          height: '32px',
-          border: '1.5px solid var(--primary)',
-          borderRadius: '50%',
-          transform: `translate3d(${trail.x - 16}px, ${trail.y - 16}px, 0) scale(${isHovered ? 1.5 : 1})`,
-          transition: 'transform 0.15s cubic-bezier(0.25, 1, 0.5, 1), border-color 0.2s ease, opacity 0.2s ease',
-          backgroundColor: isHovered ? 'rgba(239, 71, 111, 0.08)' : 'transparent',
+          transform: `translate3d(${trail.x - 16}px, ${trail.y - 16}px, 0)`,
           pointerEvents: 'none',
           zIndex: 9998,
           opacity: 0.8
         }}
-      />
+      >
+        {/* Outer Ring Content (hover scale/color/opacity transition only) */}
+        <div
+          style={{
+            width: '32px',
+            height: '32px',
+            border: '1.5px solid var(--primary)',
+            borderRadius: '50%',
+            transform: `scale(${isHovered ? 1.5 : 1})`,
+            transition: 'transform 0.15s cubic-bezier(0.25, 1, 0.5, 1), border-color 0.2s ease, background-color 0.2s ease, opacity 0.2s ease',
+            backgroundColor: isHovered ? 'rgba(239, 71, 111, 0.08)' : 'transparent'
+          }}
+        />
+      </div>
     </>
   )
 }
