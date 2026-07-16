@@ -26,6 +26,7 @@ import {
 } from 'lucide-react'
 import Canvas3D from './components/Canvas3D'
 import ProjectCanvas3D from './components/ProjectCanvas'
+import CustomCursor from './components/CustomCursor'
 
 // Animation presets
 const fadeInUp = {
@@ -339,6 +340,7 @@ export default function App() {
 
   return (
     <div className="app-container">
+      <CustomCursor />
       {/* Background Ambients */}
       <div className="ambient-glow-1"></div>
       <div className="ambient-glow-2"></div>
@@ -458,7 +460,7 @@ export default function App() {
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 1, ease: [0.16, 1, 0.3, 1] as const }}
           >
-            <span className="hero-subtitle">SENIOR AI / ML DEVELOPER</span>
+            <span className="hero-subtitle">AI / ML DEVELOPER</span>
             <h1 className="hero-title">
               {renderHoverLetters("Hi, I'm ")}
               <span className="name-wrapper">
@@ -511,7 +513,7 @@ export default function App() {
             variants={staggerContainer}
             initial="initial"
             whileInView="whileInView"
-            viewport={{ once: true, margin: '-20px' }}
+            viewport={{ once: false, margin: '-20px' }}
           >
             {skills.map((skill, index) => (
               <motion.div
@@ -539,7 +541,7 @@ export default function App() {
           variants={staggerContainer}
           initial="initial"
           whileInView="whileInView"
-          viewport={{ once: true, margin: '-20px' }}
+          viewport={{ once: false, margin: '-20px' }}
         >
           {projects.map((proj, idx) => (
             <motion.div
@@ -617,8 +619,8 @@ export default function App() {
                 transition={{ duration: 0.6, delay: idx * 0.1 }}
               >
                 <div className="horizontal-timeline-dot"></div>
-                <div 
-                  className="glass-card tilt-card" 
+                <div
+                  className="glass-card tilt-card"
                   {...tiltProps}
                   style={{ display: 'flex', flexDirection: 'column', gap: '1rem', textAlign: 'left', width: '100%' }}
                 >
