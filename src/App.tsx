@@ -19,8 +19,6 @@ import {
   Server,
   Menu,
   X,
-  Copy,
-  Check,
   Sun,
   Moon
 } from 'lucide-react'
@@ -119,13 +117,6 @@ export default function App() {
   // Contact Form State
   const [formState, setFormState] = useState({ name: '', email: '', subject: '', message: '' })
   const [formStatus, setFormStatus] = useState<'idle' | 'submitting' | 'success' | 'error'>('idle')
-  const [copied, setCopied] = useState(false)
-
-  const copyEmailToClipboard = () => {
-    navigator.clipboard.writeText('charansuriya2000@gmail.com')
-    setCopied(true)
-    setTimeout(() => setCopied(false), 2000)
-  }
 
   useEffect(() => {
     const handleScroll = () => {
@@ -659,27 +650,6 @@ export default function App() {
 
             <div className="contact-details">
               <div className="contact-detail-card tilt-card" {...tiltProps}>
-                <span className="detail-label">Email Address</span>
-                <span className="detail-value">charansuriya2000@gmail.com</span>
-                <div className="detail-actions">
-                  <button onClick={copyEmailToClipboard} className="btn-detail-action" aria-label="Copy email address">
-                    {copied ? (
-                      <>
-                        <Check size={16} style={{ color: '#10b981' }} /> Copied!
-                      </>
-                    ) : (
-                      <>
-                        <Copy size={16} /> Copy Email
-                      </>
-                    )}
-                  </button>
-                  <a href="mailto:charansuriya2000@gmail.com" className="btn-detail-action btn-cta-secondary" aria-label="Send direct email">
-                    <Send size={16} /> Open Mail Client
-                  </a>
-                </div>
-              </div>
-
-              <div className="contact-detail-card tilt-card" {...tiltProps}>
                 <span className="detail-label">Professional Networks</span>
                 <div className="social-links-grid">
                   <a href="https://linkedin.com/in/gurucharan-s" target="_blank" rel="noreferrer" className="social-action-card tilt-card" id="contact-linkedin" {...tiltProps}>
@@ -802,7 +772,6 @@ export default function App() {
           <div className="footer-socials">
             <a href="https://github.com/callmegruz" target="_blank" rel="noreferrer" className="footer-social-link"><Github size={20} /></a>
             <a href="https://linkedin.com/in/gurucharan-s" target="_blank" rel="noreferrer" className="footer-social-link"><Linkedin size={20} /></a>
-            <a href="mailto:charansuriya2000@gmail.com" className="footer-social-link"><Mail size={20} /></a>
           </div>
         </div>
       </footer>
